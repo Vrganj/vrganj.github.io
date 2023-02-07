@@ -1,1 +1,82 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vrganj</title>
+
+    <style>
+        body, html {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>IEEE-754</h1>
+
+    <div>
+        <h2>single-precision</h2>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Stored decimal value:</td>
+                    <td><input type="text" id="decimal"></td>
+                </tr>
+                <tr>
+                    <td>Binary representation:</td>
+                    <td><input type="text" id="binary"></td>
+                </tr>
+                <tr>
+                    <td>Hexadecimal representation:</td>
+                    <td><input type="text" id="hex"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    
+
+    <script>
+        const buffer = new ArrayBuffer(4);
+        const floatBytes = new Uint8Array(buffer);
+        const floats = new Float32Array(buffer);
+
+        const decimal = document.getElementById('decimal');
+        const hex = document.getElementById('hex');
+        const binary = document.getElementById('binary');
+
+        function update() {
+            decimal.value = floats[0].toString();
+            hex.value = [...floatBytes].reverse().map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase();
+            binary.value = [...floatBytes].reverse().map(n => n.toString(2).padStart(8, '0')).join('');
+        }
+
+        decimal.addEventListener('change', ({ target }) => {
+            floats[0] = parseFloat(target.value);
+            update();
+        });
+
+        hex.addEventListener('change', ({ target }) => {
+            let value = parseInt(target.value, 16);
+
+            for (let i = 0; i < 4; ++i) {
+                floatBytes[i] = value & 0xFF;
+                value >>= 8;
+            }
+
+            update();
+        });
+
+        binary.addEventListener('change', ({ target }) => {
+            let value = parseInt(target.value, 2);
+
+            for (let i = 0; i < 4; ++i) {
+                
+            }
+
+            update();
+        });
+    </script>
+</body>
+</html>
