@@ -6,41 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vrganj</title>
 
-    <style>
-        body, html {
-            font-family: sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/bamboo.css/dist/dark.min.css" />
 </head>
 <body>
-    <h1>IEEE-754</h1>
+    <header>
+        <h1>IEEE-754</h1>
+    </header>
+
+    <hr>
+
+    <table>
+        <tbody>
+            <tr>
+                <td>Stored decimal value:</td>
+                <td><input type="text" id="decimal"></td>
+            </tr>
+            <tr>
+                <td>Binary representation:</td>
+                <td><input type="text" id="binary"></td>
+            </tr>
+            <tr>
+                <td>Hexadecimal representation:</td>
+                <td><input type="text" id="hex"></td>
+            </tr>
+        </tbody>
+    </table>
 
     <div>
-        <h2>single-precision</h2>
-        <table>
-            <tbody>
-                <tr>
-                    <td>Stored decimal value:</td>
-                    <td><input type="text" id="decimal"></td>
-                </tr>
-                <tr>
-                    <td>Binary representation:</td>
-                    <td><input type="text" id="binary"></td>
-                </tr>
-                <tr>
-                    <td>Hexadecimal representation:</td>
-                    <td><input type="text" id="hex"></td>
-                </tr>
-            </tbody>
-        </table>
+        <button id="previous" style="float: left">previous</button>
+        <button id="next" style="float: right">next</button>
     </div>
-    
-    
 
     <script>
         const buffer = new ArrayBuffer(4);
-        const floatBytes = new Uint8Array(buffer);
         const floats = new Float32Array(buffer);
+        const ints = new Uint32Array(buffer);
 
         const decimal = document.getElementById('decimal');
         const hex = document.getElementById('hex');
@@ -48,8 +48,8 @@
 
         function update() {
             decimal.value = floats[0].toString();
-            hex.value = [...floatBytes].reverse().map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase();
-            binary.value = [...floatBytes].reverse().map(n => n.toString(2).padStart(8, '0')).join('');
+            hex.value = ints[0].toString(16).padStart(8, '0').toUpperCase();
+            binary.value = ints[0].toString(2).padStart(32, '0');
         }
 
         decimal.addEventListener('change', ({ target }) => {
@@ -58,23 +58,22 @@
         });
 
         hex.addEventListener('change', ({ target }) => {
-            let value = parseInt(target.value, 16);
-
-            for (let i = 0; i < 4; ++i) {
-                floatBytes[i] = value & 0xFF;
-                value >>= 8;
-            }
-
+            ints[0] = parseInt(target.value, 16);
             update();
         });
 
         binary.addEventListener('change', ({ target }) => {
-            let value = parseInt(target.value, 2);
+            ints[0] = parseInt(target.value, 2);
+            update();
+        });
 
-            for (let i = 0; i < 4; ++i) {
-                
-            }
+        document.getElementById('previous').addEventListener('click', () => {
+            --ints[0];
+            update();
+        });
 
+        document.getElementById('next').addEventListener('click', () => {
+            ++ints[0];
             update();
         });
     </script>
